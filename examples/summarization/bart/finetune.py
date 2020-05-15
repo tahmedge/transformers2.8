@@ -7,7 +7,7 @@ import time
 import torch
 from torch.utils.data import DataLoader
 
-from transformer_base import BaseTransformer, add_generic_args, generic_train, get_linear_schedule_with_warmup
+from transformer_base import BaseTransformer, add_generic_args, generic_train, get_linear_schedule_with_warmup, log_hyperparams
 
 
 try:
@@ -132,14 +132,14 @@ class SummarizationTrainer(BaseTransformer):
         # Add BART specific options
         parser.add_argument(
             "--max_source_length",
-            default=1024,
+            default=100,
             type=int,
             help="The maximum total input sequence length after tokenization. Sequences longer "
             "than this will be truncated, sequences shorter will be padded.",
         )
         parser.add_argument(
             "--max_target_length",
-            default=56,
+            default=20,
             type=int,
             help="The maximum total input sequence length after tokenization. Sequences longer "
             "than this will be truncated, sequences shorter will be padded.",
@@ -163,7 +163,8 @@ def main(args):
         os.makedirs(args.output_dir)
     model = SummarizationTrainer(args)
     trainer = generic_train(model, args)
-
+    #if args.do_train:
+    #    log_hyperparams(model)
     # Optionally, predict on dev set and write to output_dir
     if args.do_predict:
         # See https://github.com/huggingface/transformers/issues/3159

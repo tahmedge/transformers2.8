@@ -1,4 +1,4 @@
-export OUTPUT_DIR_NAME=bart_sum
+export OUTPUT_DIR_NAME=bart_sum_dp_cnndm
 export CURRENT_DIR=${PWD}
 export OUTPUT_DIR=${CURRENT_DIR}/${OUTPUT_DIR_NAME}
 
@@ -8,12 +8,12 @@ mkdir -p $OUTPUT_DIR
 # Add parent directory to python path to access transformer_base.py
 export PYTHONPATH="../../":"${PYTHONPATH}"
 
-python finetune.py \
---data_dir=./cnn-dailymail/cnn_dm \
+python3 finetune.py \
+--data_dir=../dp_data/ \
 --model_type=bart \
---model_name_or_path=bart-large \
+--model_name_or_path=bart-large-cnn \
 --learning_rate=3e-5 \
---train_batch_size=4 \
+--train_batch_size=1 \
 --eval_batch_size=4 \
 --output_dir=$OUTPUT_DIR \
---do_train  $@
+--do_predict

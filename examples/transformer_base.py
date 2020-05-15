@@ -2,7 +2,7 @@ import argparse
 import logging
 import os
 import random
-
+import json
 import numpy as np
 import pytorch_lightning as pl
 import torch
@@ -185,7 +185,7 @@ class BaseTransformer(pl.LightningModule):
         parser.add_argument("--adam_epsilon", default=1e-8, type=float, help="Epsilon for Adam optimizer.")
         parser.add_argument("--warmup_steps", default=0, type=int, help="Linear warmup over warmup_steps.")
         parser.add_argument(
-            "--num_train_epochs", default=3, type=int, help="Total number of training epochs to perform."
+            "--num_train_epochs", default=1, type=int, help="Total number of training epochs to perform."
         )
 
         parser.add_argument("--train_batch_size", default=32, type=int)
@@ -256,6 +256,10 @@ def add_generic_args(parser, root_dir):
     parser.add_argument("--server_port", type=str, default="", help="For distant debugging.")
     parser.add_argument("--seed", type=int, default=42, help="random seed for initialization")
 
+def log_hyperparams(model: pl.LightningModule):
+        model.config.save_pretrained(model.hparams.output_dir)
+        with open(os.path.join(model.hparams.output_dir, "hparam.json"),"w+") as f:
+            json.dump(model.hparams, f)
 
 def generic_train(model: BaseTransformer, args: argparse.Namespace):
     # init model
@@ -276,6 +280,8 @@ def generic_train(model: BaseTransformer, args: argparse.Namespace):
     checkpoint_callback = pl.callbacks.ModelCheckpoint(
         filepath=args.output_dir, prefix="checkpoint", monitor="val_loss", mode="min", save_top_k=5
     )
+
+
 
     train_params = dict(
         accumulate_grad_batches=args.gradient_accumulation_steps,
