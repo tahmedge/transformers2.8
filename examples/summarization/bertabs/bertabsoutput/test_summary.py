@@ -1,0 +1,1 @@
+the u.s. has n't yet yet yet to enter enter the u.s.. " we have n't been the girlfriend of a girlfriend. " i do n't have to be the girlfriend , but " we do n't "
